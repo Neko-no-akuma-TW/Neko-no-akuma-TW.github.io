@@ -1,115 +1,177 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="zh-Hant">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>404 - 找不到頁面 | Neko no akuma</title>
-  <!-- 設置 favicon -->
-  <link rel="icon" type="image/png" href="https://cdn.dybts.qzz.io/images/neko_icon.png">
-  <!-- Font Awesome for Icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <meta name="description" content="404 - 找不到頁面 | Neko no akuma 導航站">
+  <title>404 | 找不到頁面 - Neko no akuma</title>
+  <link rel="icon" href="https://cdn.dybts.qzz.io/images/neko_icon.png" type="image/png">
+  
+  <!-- 📊 Umami 追蹤（與主站相同，可追蹤 404 點擊） -->
+  <script defer src="https://cloud.umami.is/script.js" data-website-id="91121bed-e697-4fdb-b6a9-ab7ab8f5f50e"></script>
+  
   <style>
     :root {
-      --primary-color: #007bff;
-      --bg-color: #f8f9fa;
-      --text-color: #333;
-      --card-bg: #ffffff;
-      --hover-color: #0056b3;
+      --bg: #f8f9fa; --card-bg: #ffffff; --text: #212529;
+      --text-muted: #6c757d; --accent: #9b59b6; --accent-hover: #8e44ad;
+      --border: #e9ecef; --shadow: 0 4px 12px rgba(0,0,0,0.1);
+      --neko-gradient: linear-gradient(135deg, #9b59b6, #3498db);
+      --toggle-bg: #e9ecef; --toggle-ball: #ffffff;
     }
-
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0f0f1a; --card-bg: #1a1a2e; --text: #f0f0f5;
+        --text-muted: #a0a0b0; --accent: #b388ff; --accent-hover: #9575cd;
+        --border: #2a2a4a; --shadow: 0 4px 16px rgba(0,0,0,0.4);
+        --neko-gradient: linear-gradient(135deg, #b388ff, #64b5f6);
+        --toggle-bg: #2a2a4a; --toggle-ball: #f0f0f5;
+      }
+    }
+    [data-theme="dark"] {
+      --bg: #0f0f1a; --card-bg: #1a1a2e; --text: #f0f0f5;
+      --text-muted: #a0a0b0; --accent: #b388ff; --accent-hover: #9575cd;
+      --border: #2a2a4a; --shadow: 0 4px 16px rgba(0,0,0,0.4);
+      --neko-gradient: linear-gradient(135deg, #b388ff, #64b5f6);
+      --toggle-bg: #2a2a4a; --toggle-ball: #f0f0f5;
+    }
+    [data-theme="light"] {
+      --bg: #f8f9fa; --card-bg: #ffffff; --text: #212529;
+      --text-muted: #6c757d; --accent: #9b59b6; --accent-hover: #8e44ad;
+      --border: #e9ecef; --shadow: 0 4px 12px rgba(0,0,0,0.1);
+      --neko-gradient: linear-gradient(135deg, #9b59b6, #3498db);
+      --toggle-bg: #e9ecef; --toggle-ball: #ffffff;
+    }
+    
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: var(--bg-color);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      margin: 0;
-      padding: 20px;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans TC", sans-serif;
+      background: var(--bg); color: var(--text); line-height: 1.6;
+      min-height: 100vh; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; padding: 2rem 1rem;
+      background-image: radial-gradient(circle at 10% 20%, rgba(155,89,182,0.08) 0%, transparent 25%),
+                        radial-gradient(circle at 90% 80%, rgba(52,152,219,0.08) 0%, transparent 25%);
+      transition: background 0.3s, color 0.3s;
     }
-
     .container {
-      background-color: var(--card-bg);
-      padding: 2.5rem 2rem;
-      border-radius: 20px;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-      text-align: center;
-      max-width: 400px;
-      width: 100%;
+      background: var(--card-bg); border-radius: 16px; border: 1px solid var(--border);
+      box-shadow: var(--shadow); padding: 2.5rem 2rem; text-align: center;
+      max-width: 500px; width: 100%; position: relative;
     }
-
+    .theme-toggle {
+      position: absolute; top: 1rem; right: 1rem;
+      width: 44px; height: 24px; background: var(--toggle-bg);
+      border-radius: 12px; cursor: pointer; border: none;
+      display: flex; align-items: center; padding: 2px;
+      transition: background 0.3s;
+    }
+    .theme-toggle::after {
+      content: '🌙'; font-size: 14px;
+      width: 20px; height: 20px; border-radius: 50%;
+      background: var(--toggle-ball); display: flex;
+      align-items: center; justify-content: center;
+      transition: transform 0.3s ease;
+    }
+    [data-theme="dark"] .theme-toggle::after {
+      content: '☀️'; transform: translateX(20px);
+    }
     .avatar {
-      width: 120px;
-      height: 120px;
-      border-radius: 50%;
-      margin-bottom: 1.5rem;
-      border: 4px solid var(--primary-color);
-      object-fit: cover;
+      width: 80px; height: 80px; border-radius: 50%; margin: 0 auto 1rem;
+      background: var(--neko-gradient); padding: 3px; display: block;
     }
-
-    h1 {
-      font-size: 3rem;
-      margin-bottom: 0.5rem;
-      color: var(--primary-color);
+    .avatar img {
+      width: 100%; height: 100%; border-radius: 50%; object-fit: cover;
+      background: var(--card-bg); border: 3px solid var(--card-bg);
     }
-
-    h2 {
-      font-size: 1.5rem;
-      margin-bottom: 1rem;
-      color: var(--text-color);
+    .error-code {
+      font-size: 5rem; font-weight: 800; margin: 1rem 0 0.5rem;
+      background: var(--neko-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      line-height: 1; letter-spacing: -2px;
     }
-
-    .description {
-      font-size: 1rem;
-      color: #666;
-      margin-bottom: 2rem;
+    h1 { font-size: 1.6rem; margin-bottom: 0.5rem; }
+    .subtitle { color: var(--text-muted); margin-bottom: 1.5rem; font-size: 0.95rem; }
+    .btn-home {
+      display: inline-block; background: var(--accent); color: white;
+      padding: 0.8rem 1.8rem; border-radius: 10px; text-decoration: none;
+      font-weight: 500; transition: all 0.2s; box-shadow: var(--shadow);
     }
-
-    .back-btn {
-      display: inline-flex;
-      align-items: center;
-      padding: 12px 25px;
-      background-color: var(--primary-color);
-      color: #fff;
-      text-decoration: none;
-      border-radius: 12px;
-      font-weight: 600;
-      transition: all 0.3s ease;
+    .btn-home:hover { background: var(--accent-hover); transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,0.15); }
+    .hint { margin-top: 1.2rem; font-size: 0.85rem; color: var(--text-muted); }
+    footer { margin-top: 2rem; text-align: center; color: var(--text-muted); font-size: 0.85rem; }
+    
+    /* 🐾 浮動貓咪動畫 */
+    .neko-float {
+      position: absolute; font-size: 2rem; opacity: 0.15;
+      animation: float 6s ease-in-out infinite;
+      pointer-events: none; z-index: -1;
     }
-
-    .back-btn i {
-      margin-right: 10px;
+    @keyframes float {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-15px) rotate(5deg); }
     }
-
-    .back-btn:hover {
-      background-color: var(--hover-color);
-      transform: translateY(-3px);
-      box-shadow: 0 5px 15px rgba(0, 123, 255, 0.3);
-    }
-
-    footer {
-      margin-top: 2rem;
-      font-size: 0.8rem;
-      color: #999;
+    @media (max-width: 480px) {
+      .error-code { font-size: 4rem; }
+      .container { padding: 2rem 1.5rem; }
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <img class="avatar" src="https://cdn.dybts.qzz.io/images/neko_icon.png" alt="Neko no akuma">
-    <h1>404</h1>
-    <h2>找不到此頁面</h2>
-    <p class="description">Discord 機器人 DYBTS 運營者</p>
-    <p class="description">抱歉，您所尋找的頁面不存在或是已被移動。</p>
-
-    <a href="/" class="back-btn">
-      <i class="fas fa-home"></i>
-      回到首頁
-    </a>
-
-    <footer>
-      &copy; 2026 Neko no akuma. All rights reserved.
-    </footer>
+    <button class="theme-toggle" id="themeToggle" aria-label="切換深色/淺色模式"></button>
+    <span class="avatar">
+      <img src="https://cdn.dybts.qzz.io/images/neko_icon.png" alt="Neko no akuma ICON">
+    </span>
+    
+    <div class="neko-float" style="top: 10%; left: 5%;">🐾</div>
+    <div class="neko-float" style="top: 25%; right: 8%; animation-delay: 1.5s;">✨</div>
+    <div class="neko-float" style="bottom: 15%; left: 12%; animation-delay: 3s;">🎀</div>
+    
+    <div class="error-code">404</div>
+    <h1>🐾 找不到頁面</h1>
+    <p class="subtitle">這隻 Neko 似乎迷路了...<br>你訪問的連結可能已被移除、移動或從未存在。</p>
+    
+    <!-- 💡 若部署於子目錄（如 /nav/），請將 href 改為 "./" 或完整網域 -->
+    <a href="index.html" class="btn-home">🏠 返回導航站首頁</a>
+    <p class="hint">💡 提示：也可以直接檢查網址拼寫，或從首頁重新尋找。</p>
   </div>
+
+  <footer>
+    <p>© <span id="year"></span> Neko no akuma | 🐾 用愛與程式碼打造的小小宇宙</p>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // 🌓 主題切換
+      const toggle = document.getElementById('themeToggle');
+      const savedTheme = localStorage.getItem('neko-theme');
+      function applyTheme(theme) {
+        if (theme === 'dark' || theme === 'light') {
+          document.documentElement.setAttribute('data-theme', theme);
+          localStorage.setItem('neko-theme', theme);
+        } else {
+          document.documentElement.removeAttribute('data-theme');
+          localStorage.removeItem('neko-theme');
+        }
+      }
+      if (savedTheme) applyTheme(savedTheme);
+      else if (window.matchMedia('(prefers-color-scheme: dark)').matches) applyTheme('dark');
+      
+      toggle.addEventListener('click', () => {
+        const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        applyTheme(next);
+        toggle.style.transform = 'scale(0.9)'; setTimeout(() => toggle.style.transform = '', 150);
+      });
+      
+      // 📅 年份
+      document.getElementById('year').textContent = new Date().getFullYear();
+      
+      // 📊 Umami 404 事件追蹤
+      if (typeof umami !== 'undefined') {
+        umami.track('404_page_view', { 
+          path: window.location.pathname,
+          referrer: document.referrer || 'direct'
+        });
+      }
+    });
+  </script>
 </body>
 </html>
