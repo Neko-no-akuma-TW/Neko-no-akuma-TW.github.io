@@ -1,19 +1,15 @@
-# 🐾 NekoNav 自動部署工作流程
-# 觸發條件：push 到 main 分支
 name: 🚀 Deploy to GitHub Pages
 
 on:
   push:
     branches: [ "main" ]
-  workflow_dispatch:  # 允許手動觸發
+  workflow_dispatch:
 
-# 設定權限（GitHub Pages 需要）
 permissions:
   contents: read
   pages: write
   id-token: write
 
-# 限制同時只有一個部署任務
 concurrency:
   group: "pages"
   cancel-in-progress: true
@@ -24,56 +20,27 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
-    
     steps:
-      # 1️⃣ checkout 程式碼
       - name: 📥 Checkout repository
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0  # 抓取完整歷史以取得正確 commit 時間
-      
-      # 2️⃣ 設定環境變數：抓取最新 commit 時間
-      - name: 🕐 Get commit time
-        id: commit_time
+
+      - name: 🕒 Generate Build Time
+        id: build_time
+        run: echo "time=$(date -u +'%Y-%m-%d %H:%M UTC')" >> $GITHUB_OUTPUT
+
+      - name: ✏️ Inject Build Time into HTML
         run: |
-          # 取得最新 commit 的 ISO 時間
-          COMMIT_TIME=$(git log -1 --format=%cI)
-          # 轉換為可讀格式：2026-04-08
-          FORMATTED_TIME=$(date -d "$COMMIT_TIME" "+%Y-%m-%d" 2>/dev/null || date -j -f "%Y-%m-%dT%H:%M:%S%z" "${COMMIT_TIME%.*}" "+%Y-%m-%d" 2>/dev/null || echo "2026-04-08")
-          echo "formatted_time=$FORMATTED_TIME" >> $GITHUB_OUTPUT
-          echo "✅ Commit time: $FORMATTED_TIME"
-      
-      # 3️⃣ 替換 HTML 中的更新時間佔位符
-      - name: ✏️ Inject build time into HTML
-        run: |
-          # 替換 <!-- BUILD_TIME_PLACEHOLDER --> 為實際時間
-          sed -i "s|<!-- BUILD_TIME_PLACEHOLDER -->|${{ steps.commit_time.outputs.formatted_time }}|g" index.html
-          echo "✅ 已更新頁尾時間為：${{ steps.commit_time.outputs.formatted_time }}"
-      
-      # 4️⃣ 設定 GitHub Pages
+          sed -i "s|<!-- BUILD_TIME_PLACEHOLDER -->|${{ steps.build_time.outputs.time }}|g" index.html
+          echo "✅ 已注入更新時間: ${{ steps.build_time.outputs.time }}"
+
       - name: 📦 Setup Pages
         uses: actions/configure-pages@v4
-      
-      # 5️⃣ 上傳構建產物（靜態檔案）
+
       - name: 📤 Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: '.'  # 上傳根目錄所有檔案
-      
-      # 6️⃣ 部署到 GitHub Pages
+          path: '.'
+
       - name: 🚀 Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-      
-      # 7️⃣ [可選] 部署完成通知
-      - name: 🔔 Notify deployment result
-        if: always()
-        run: |
-          STATUS="${{ job.status }}"
-          URL="${{ steps.deployment.outputs.page_url }}"
-          echo "🐾 部署狀態: $STATUS"
-          echo "🌐 網站網址: $URL"
-          # 可在此整合 Discord Webhook / Email 通知
-          # 範例：curl -X POST -H "Content-Type: application/json" \
-          #   -d "{\"content\":\"🐾 NekoNav 已更新！$STATUS\\n$URL\"}" \
-          #   "https://discord.com/api/webhooks/YOUR_WEBHOOK_URL"

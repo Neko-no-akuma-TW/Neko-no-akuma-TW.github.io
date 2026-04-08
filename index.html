@@ -233,7 +233,7 @@
     document.addEventListener('DOMContentLoaded', () => {
       renderLinks(siteData);
       
-      // 🔍 搜尋
+      // 🔍 搜尋功能（維持原樣）
       document.getElementById('search').addEventListener('input', function(e) {
         const query = e.target.value.toLowerCase().trim();
         document.querySelectorAll('.link-card').forEach(card => {
@@ -244,7 +244,7 @@
         });
       });
       
-      // 🌓 主題切換
+      // 🌓 主題切換（維持原樣）
       const toggle = document.getElementById('themeToggle');
       const savedTheme = localStorage.getItem('neko-theme');
       function applyTheme(theme) {
@@ -264,10 +264,14 @@
         toggle.style.transform = 'scale(0.9)'; setTimeout(() => toggle.style.transform = '', 150);
       });
       
-      // 📅 年份
+      // 📅 年份 & 更新時間 fallback
       document.getElementById('year').textContent = new Date().getFullYear();
+      const updateEl = document.getElementById('update-date');
+      if (updateEl.textContent.includes('BUILD_TIME_PLACEHOLDER')) {
+        updateEl.textContent = new Date().toLocaleString('zh-TW', { timeZone: 'Asia/Taipei' });
+      }
       
-      // 🖱️ Umami 點擊追蹤（自動記錄哪個連結被點擊）
+      // 🖱️ Umami 點擊追蹤
       if (typeof umami !== 'undefined') {
         document.querySelectorAll('.link-card').forEach(card => {
           card.addEventListener('click', () => {
