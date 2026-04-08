@@ -26,12 +26,33 @@ jobs:
 
       - name: 🕒 Generate Build Time
         id: build_time
-        run: echo "time=$(date -u +'%Y-%m-%d %H:%M UTC')" >> $GITHUB_OUTPUT
-
-      - name: ✏️ Inject Build Time into HTML
         run: |
-          sed -i "s|<!-- BUILD_TIME_PLACEHOLDER -->|${{ steps.build_time.outputs.time }}|g" index.html
-          echo "✅ 已注入更新時間: ${{ steps.build_time.outputs.time }}"
+          echo "time=$(date -u +'%Y-%m-%d %H:%M UTC')" >> $GITHUB_OUTPUT
+          echo "Generated time: $(date -u +'%Y-%m-%d %H:%M UTC')"
+
+      - name: ✏️ Update HTML with build time
+        run: |
+          # 使用更穩健的替換方式
+          BUILD_TIME="${{ steps.build_time.outputs.time }}"
+          echo "🔧 Replacing placeholder with: $BUILD_TIME"
+          
+          # 檢查檔案是否存在
+          if [ ! -f index.html ]; then
+            echo "❌ Error: index.html not found!"
+            exit 1
+          fi
+          
+          # 使用 sed 替換（更寬容的語法）
+          sed -i "s|<!-- BUILD_TIME_PLACEHOLDER -->|$BUILD_TIME|g" index.html
+          
+          # 驗證替換結果
+          if grep -q "BUILD_TIME_PLACEHOLDER" index.html; then
+            echo "❌ Warning: Placeholder still found in HTML!"
+            grep "BUILD_TIME_PLACEHOLDER" index.html
+          else
+            echo "✅ Successfully replaced build time"
+            grep "最後更新" index.html || true
+          fi
 
       - name: 📦 Setup Pages
         uses: actions/configure-pages@v4

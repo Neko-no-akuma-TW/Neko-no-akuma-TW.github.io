@@ -7,8 +7,7 @@
   <title>🐾 Neko no akuma | 個人導航站</title>
   <link rel="icon" href="https://cdn.dybts.qzz.io/images/neko_icon.png" type="image/png">
   
-  <!-- 📊 Umami 隱私友善統計 -->
-  <!-- 請將 YOUR_UMAMI_WEBSITE_ID 替換為你的實際 ID -->
+  <!-- 📊 Umami 隱私友善統計 - 請替換 YOUR_UMAMI_WEBSITE_ID -->
   <script defer src="https://cloud.umami.is/script.js" data-website-id="91121bed-e697-4fdb-b6a9-ab7ab8f5f50e"></script>
   
   <style>
@@ -50,11 +49,12 @@
       background-image: radial-gradient(circle at 10% 20%, rgba(155,89,182,0.08) 0%, transparent 25%),
                         radial-gradient(circle at 90% 80%, rgba(52,152,219,0.08) 0%, transparent 25%);
       transition: background 0.3s, color 0.3s;
+      min-height: 100vh; display: flex; flex-direction: column;
     }
     header { 
       text-align: center; margin-bottom: 2.5rem; padding: 1.5rem;
       background: var(--card-bg); border-radius: 16px; border: 1px solid var(--border);
-      box-shadow: var(--shadow); max-width: 700px; margin-left: auto; margin-right: auto;
+      box-shadow: var(--shadow); max-width: 700px; margin: 0 auto;
       position: relative;
     }
     .theme-toggle {
@@ -91,7 +91,7 @@
       transition: all 0.2s;
     }
     #search:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(155,89,182,0.25); }
-    main { max-width: 1200px; margin: 0 auto; }
+    main { max-width: 1200px; margin: 0 auto; flex: 1; }
     .category { margin-bottom: 2.5rem; }
     .category h2 {
       font-size: 1.25rem; margin-bottom: 1rem; padding-bottom: 0.5rem;
@@ -134,7 +134,7 @@
       background: var(--accent); color: white;
     }
     footer {
-      text-align: center; margin-top: 3.5rem; padding-top: 1.5rem;
+      text-align: center; margin-top: auto; padding-top: 1.5rem; padding-bottom: 1rem;
       border-top: 1px solid var(--border); color: var(--text-muted); font-size: 0.9rem;
     }
     .hidden { display: none !important; }
@@ -172,81 +172,139 @@
   <footer>
     <p>© <span id="year"></span> Neko no akuma | 🐾 用愛與程式碼打造的小小宇宙</p>
     <p style="margin-top: 0.5rem; font-size: 0.85rem;">
-      最後更新：<span id="update-date"><!-- BUILD_TIME_PLACEHOLDER --></span>
-      <span id="git-commit-time"></span>
+      最後更新：<span id="update-date"><!--BUILD_TIME_PLACEHOLDER--></span>
     </p>
   </footer>
 
   <script>
+    // 🗂️ JSON 資料驅動：所有連結集中管理，新增/修改只需編輯此陣列
     const siteData = [
       {
         category: "🤖 Discord 機器人",
         links: [
-          { title: "DYBTS 官網", url: "https://dybts.us.kg", desc: "主打多功能伺服器管理：客服單系統、歡迎訊息、氣象署天氣查詢、地震報告推播，整合政府開放資料，讓伺服器管理更智慧。", badge: "多功能", class: "discord" },
-          { title: "GDYBTS 官網", url: "https://giveaway.dybts.us.kg", desc: "專為抽獎而生的 Discord 機器人，介面直觀、設定簡單，讓每個社群都能快速舉辦公平又有趣的抽獎活動。", badge: "抽獎專用", class: "giveaway" }
+          {
+            title: "DYBTS 官網",
+            url: "https://dybts.us.kg",
+            desc: "主打多功能伺服器管理：客服單系統、歡迎訊息、氣象署天氣查詢、地震報告推播，整合政府開放資料，讓伺服器管理更智慧。",
+            badge: "多功能",
+            class: "discord"
+          },
+          {
+            title: "GDYBTS 官網",
+            url: "https://giveaway.dybts.us.kg",
+            desc: "專為抽獎而生的 Discord 機器人，介面直觀、設定簡單，讓每個社群都能快速舉辦公平又有趣的抽獎活動。",
+            badge: "抽獎專用",
+            class: "giveaway"
+          }
         ]
       },
       {
         category: "🎮 遊戲輔助工具",
         links: [
-          { title: "明日方舟終末地簽到助手", url: "https://endfield-asst.dybts.us.kg", desc: "自動完成網頁簽到流程，不用每天手動開啟網站或 App，輕鬆領取每日獎勵，省時又省力。", class: "game" }
+          {
+            title: "明日方舟終末地簽到助手",
+            url: "https://endfield-asst.dybts.us.kg",
+            desc: "自動完成網頁簽到流程，不用每天手動開啟網站或 App，輕鬆領取每日獎勵，省時又省力。",
+            class: "game"
+          }
         ]
       },
       {
         category: "🎵 神椿粉絲專區",
         links: [
-          { title: "神椿資訊站", url: "https://kamitsubaki.dpdns.org", desc: "整理神椿工作室（Kamitsubaki Studio）旗下藝人、MV、專輯與活動資訊，粉絲必備情報站。", class: "kamitsubaki" },
-          { title: "台灣神椿粉絲活動組", url: "https://twevent.kamitsubaki.qzz.io", desc: "推廣台灣在地神椿粉絲活動：線下聚會、應援企劃、翻譯協作，連結同好一起支持喜歡的作品。", class: "kamitsubaki" }
+          {
+            title: "神椿資訊站",
+            url: "https://kamitsubaki.dpdns.org",
+            desc: "整理神椿工作室（Kamitsubaki Studio）旗下藝人、MV、專輯與活動資訊，粉絲必備情報站。",
+            class: "kamitsubaki"
+          },
+          {
+            title: "台灣神椿粉絲活動組",
+            url: "https://twevent.kamitsubaki.qzz.io",
+            desc: "推廣台灣在地神椿粉絲活動：線下聚會、應援企劃、翻譯協作，連結同好一起支持喜歡的作品。",
+            class: "kamitsubaki"
+          }
         ]
       },
       {
         category: "🌐 社群與聯絡",
         links: [
-          { title: "GitHub", url: "https://github.com/Neko-no-akuma-TW", desc: "查看我的開源專案、機器人原始碼與技術實驗，歡迎 Star、Fork 或提出 Issue 交流！", class: "github" },
-          { title: "YouTube 頻道", url: "https://youtube.com/@neko_tw", desc: "@neko_tw｜分享機器人教學、遊戲實況、神椿相關內容，歡迎訂閱追蹤！", class: "social" },
-          { title: "Discord 社群", url: "https://discord.gg/7AHak4nSbE", desc: "加入官方伺服器，獲取機器人更新通知、參與活動、與其他使用者交流問題與想法。", class: "discord" }
+          {
+            title: "GitHub",
+            url: "https://github.com/Neko-no-akuma-TW",
+            desc: "查看我的開源專案、機器人原始碼與技術實驗，歡迎 Star、Fork 或提出 Issue 交流！",
+            class: "github"
+          },
+          {
+            title: "YouTube 頻道",
+            url: "https://youtube.com/@neko_tw",
+            desc: "@neko_tw｜分享機器人教學、遊戲實況、神椿相關內容，歡迎訂閱追蹤！",
+            class: "social"
+          },
+          {
+            title: "Discord 社群",
+            url: "https://discord.gg/7AHak4nSbE",
+            desc: "加入官方伺服器，獲取機器人更新通知、參與活動、與其他使用者交流問題與想法。",
+            class: "discord"
+          }
         ]
       }
     ];
 
+    // 🔧 動態渲染連結卡片
     function renderLinks(data) {
       const container = document.getElementById('links-container');
+      if (!container) return;
       container.innerHTML = '';
+      
       data.forEach(section => {
         const sectionEl = document.createElement('section');
         sectionEl.className = 'category';
         sectionEl.innerHTML = `<h2>${section.category}</h2><div class="links-grid"></div>`;
         const grid = sectionEl.querySelector('.links-grid');
+        
         section.links.forEach(link => {
           const card = document.createElement('a');
           card.href = link.url;
           card.target = '_blank';
           card.rel = 'noopener noreferrer';
           card.className = `link-card ${link.class || ''}`;
-          card.innerHTML = `<h3>${link.title}${link.badge ? `<span class="badge">${link.badge}</span>` : ''}</h3><p>${link.desc}</p>`;
+          card.innerHTML = `
+            <h3>${link.title}${link.badge ? `<span class="badge">${link.badge}</span>` : ''}</h3>
+            <p>${link.desc}</p>
+          `;
           grid.appendChild(card);
         });
+        
         container.appendChild(sectionEl);
       });
     }
     
+    // 初始化
     document.addEventListener('DOMContentLoaded', () => {
+      // 1️⃣ 渲染連結
       renderLinks(siteData);
       
-      // 🔍 搜尋功能（維持原樣）
-      document.getElementById('search').addEventListener('input', function(e) {
-        const query = e.target.value.toLowerCase().trim();
-        document.querySelectorAll('.link-card').forEach(card => {
-          card.classList.toggle('hidden', query && !card.textContent.toLowerCase().includes(query));
+      // 2️⃣ 搜尋功能
+      const searchInput = document.getElementById('search');
+      if (searchInput) {
+        searchInput.addEventListener('input', function(e) {
+          const query = e.target.value.toLowerCase().trim();
+          document.querySelectorAll('.link-card').forEach(card => {
+            const text = card.textContent.toLowerCase();
+            card.classList.toggle('hidden', query && !text.includes(query));
+          });
+          document.querySelectorAll('.category').forEach(cat => {
+            const hasVisible = cat.querySelector('.link-card:not(.hidden)');
+            cat.style.display = hasVisible ? 'block' : 'none';
+          });
         });
-        document.querySelectorAll('.category').forEach(cat => {
-          cat.style.display = cat.querySelector('.link-card:not(.hidden)') ? 'block' : 'none';
-        });
-      });
+      }
       
-      // 🌓 主題切換（維持原樣）
+      // 3️⃣ 深色/淺色切換
       const toggle = document.getElementById('themeToggle');
       const savedTheme = localStorage.getItem('neko-theme');
+      
       function applyTheme(theme) {
         if (theme === 'dark' || theme === 'light') {
           document.documentElement.setAttribute('data-theme', theme);
@@ -256,35 +314,57 @@
           localStorage.removeItem('neko-theme');
         }
       }
-      if (savedTheme) applyTheme(savedTheme);
-      else if (window.matchMedia('(prefers-color-scheme: dark)').matches) applyTheme('dark');
-      toggle.addEventListener('click', () => {
-        const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-        applyTheme(next);
-        toggle.style.transform = 'scale(0.9)'; setTimeout(() => toggle.style.transform = '', 150);
-      });
       
-      // 📅 年份 & 更新時間 fallback
-      document.getElementById('year').textContent = new Date().getFullYear();
-      const updateEl = document.getElementById('update-date');
-      if (updateEl.textContent.includes('BUILD_TIME_PLACEHOLDER')) {
-        updateEl.textContent = new Date().toLocaleString('zh-TW', { timeZone: 'Asia/Taipei' });
+      if (savedTheme) {
+        applyTheme(savedTheme);
+      } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        applyTheme('dark');
       }
       
-      // 🖱️ Umami 點擊追蹤
+      if (toggle) {
+        toggle.addEventListener('click', () => {
+          const current = document.documentElement.getAttribute('data-theme');
+          const next = current === 'dark' ? 'light' : 'dark';
+          applyTheme(next);
+          toggle.style.transform = 'scale(0.9)';
+          setTimeout(() => toggle.style.transform = '', 150);
+        });
+      }
+      
+      // 4️⃣ 年份
+      const yearEl = document.getElementById('year');
+      if (yearEl) yearEl.textContent = new Date().getFullYear();
+      
+      // 5️⃣ 🕒 更新時間 fallback（防止 Actions 替換失敗）
+      const updateEl = document.getElementById('update-date');
+      if (updateEl) {
+        const text = updateEl.textContent.trim();
+        if (!text || text === '' || text.includes('BUILD_TIME_PLACEHOLDER')) {
+          // Actions 替換失敗或本地開啟時，顯示本地時間
+          const now = new Date();
+          const formatted = now.toLocaleString('zh-TW', {
+            year: 'numeric', month: '2-digit', day: '2-digit',
+            hour: '2-digit', minute: '2-digit',
+            timeZone: 'Asia/Taipei', hour12: false
+          });
+          updateEl.textContent = formatted + (text.includes('BUILD_TIME_PLACEHOLDER') ? ' (本地)' : '');
+          console.log('⚠️ Build time placeholder not replaced, using local fallback');
+        }
+      }
+      
+      // 6️⃣ 🖱️ Umami 點擊追蹤
       if (typeof umami !== 'undefined') {
         document.querySelectorAll('.link-card').forEach(card => {
           card.addEventListener('click', () => {
-            umami.track('nav_link_click', {
-              title: card.querySelector('h3')?.textContent.trim(),
-              url: card.href,
-              category: card.closest('.category')?.querySelector('h2')?.textContent
-            });
+            const title = card.querySelector('h3')?.textContent?.trim() || 'Unknown';
+            const url = card.href;
+            const category = card.closest('.category')?.querySelector('h2')?.textContent || 'Unknown';
+            umami.track('nav_link_click', { title, url, category });
           });
         });
       }
       
-      // 🎁 Console 彩蛋
+      // 7️⃣ 🎁 Console 彩蛋：輸入 neko() 觸發貓咪雨
       window.neko = function(count = 10) {
         const emojis = ['🐱', '🐾', '✨', '💜', '🎀'];
         for (let i = 0; i < count; i++) {
@@ -292,8 +372,10 @@
             const el = document.createElement('div');
             el.className = 'neko-emoji';
             el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
-            el.style.left = Math.random() * 100 + 'vw'; el.style.bottom = '20px';
-            document.body.appendChild(el); setTimeout(() => el.remove(), 1600);
+            el.style.left = Math.random() * 100 + 'vw';
+            el.style.bottom = '20px';
+            document.body.appendChild(el);
+            setTimeout(() => el.remove(), 1600);
           }, i * 120);
         }
         console.log('%c🐾 Neko mode activated! Try neko(20) for more!', 'color: #b388ff; font-size: 14px;');
